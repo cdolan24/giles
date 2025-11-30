@@ -1,6 +1,8 @@
-
 # giles
 The librarian supreme
+
+---
+**Status:** The BASE build is complete. All core features described in the implementation plan are implemented and tested. See `expanded_implementation_plan.md` for details.
 
 ## Quickstart
 
