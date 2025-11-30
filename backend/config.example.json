@@ -1,0 +1,11 @@
+{
+  "libraries": [
+    {
+      "name": "UC Library",
+      "baseUrl": "https://uclibrary.example.edu/api",
+      "apiKey": "<your-api-key>",
+      "enabled": true
+    }
+    // Add more libraries here
+  ]
+}
