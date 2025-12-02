@@ -57,6 +57,7 @@ function ChatWidget() {
         type="text"
         value={input}
         onChange={e => setInput(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') handleSend(); }}
         style={{ width: '80%' }}
         placeholder="Ask about a field of study..."
         disabled={loading}

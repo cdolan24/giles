@@ -1,3 +1,23 @@
+
+from fastapi import FastAPI, Query
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pydantic import BaseModel
+from typing import Optional
+from passlib.context import CryptContext
+import jwt
+import datetime
+from typing import List, Dict, Any, Optional
+from api_client import LibraryAPIClient, MCPResource
+from search_filters import apply_filters
+import uvicorn
+
+app = FastAPI()
+SECRET_KEY = "your-secret-key"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
 @app.get("/analytics")
 def get_usage_analytics(token: str = Depends(oauth2_scheme)):
     """
@@ -221,7 +241,16 @@ def search_papers(
         "citation_count": citation_count
     }
     params = apply_filters({"q": q}, filters)
-    return client.search_papers(params["q"], library)
+    try:
+        results = client.search_papers(params["q"], library)
+        if not results:
+            return {"error": "No results found or all sources failed.", "error_code": "NO_RESULTS"}
+        return results
+    except Exception as e:
+        import traceback
+        print(f"ERROR_CODE:SEARCH_FAIL | {type(e).__name__}: {e}")
+        traceback.print_exc()
+        return {"error": str(e), "error_code": "SEARCH_FAIL"}
 
 @app.get("/metadata/{paper_id}")
 def get_metadata(paper_id: str, library: str) -> Dict[str, Any]:

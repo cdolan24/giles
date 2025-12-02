@@ -11,21 +11,30 @@
 - Create onboarding guides for future contributors
 
 ## Accessibility Features
-- Ensure all UI components are compatible with screen readers (use ARIA labels in React components)
-- Provide high contrast mode toggle in frontend
-- Keyboard navigation for chat and search widgets
+## UI/UX Improvement Action Items
+
+- Accessibility:
 
 ## Multi-language Support
 - Backend endpoints accept a 'lang' parameter for search and recommendations
+ - Multi-language:
 - Frontend UI supports language selection (to be implemented)
 - Use translation libraries (e.g., i18next for React) for UI text
 
+ - Onboarding:
 ## Next Actionable Steps (Advanced Implementation)
 
 All base implementation steps are now completed. Continue to monitor, refactor, and expand as needed. Refer to ADVANCED Implementation for future features.
 
----
 
 ## Notes
-- All actionable steps from the BASE implementation plan are now complete and documented.
-- Update this file as new actionable steps are identified or completed.
+---
+
+## ADVANCED Implementation Features
+
+
+---
+
+## Implementation Notes
+
+- For step 2 (Expand library connectors): Focus first on the UC Library and other college libraries. Once these are stable, expand to reputable scientific sources such as CERN and arXiv.

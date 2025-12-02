@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+requests
+passlib
+pyjwt
+python-multipart
+beautifulsoup4

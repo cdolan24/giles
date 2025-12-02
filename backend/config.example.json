@@ -2,9 +2,18 @@
   "libraries": [
     {
       "name": "UC Library",
-      "baseUrl": "https://uclibrary.example.edu/api",
-      "apiKey": "<your-api-key>",
-      "enabled": true
+      "baseUrl": "https://uclibrary.example.edu/search",
+      "apiKey": "",
+      "enabled": true,
+      "backupScraper": "uc_library_scraper"
+    }
+    ,
+    {
+      "name": "arXiv",
+      "baseUrl": "https://export.arxiv.org/find/all/1/all:+AND+{query}/0/1/0/all/0/1",
+      "apiKey": "",
+      "enabled": true,
+      "backupScraper": "arxiv_scraper"
     }
     // Add more libraries here
   ]
