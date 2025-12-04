@@ -1,37 +1,28 @@
 """
 API Client for Library Metadata and Papers
 """
-from typing import List, Dict, Any
-from mcp_resource import MCPResource
+from typing import List, Dict, Any, Optional
+from backend.mcp_resource import MCPResource
+import logging
 
 class LibraryAPIClient:
     def __init__(self, resources: List[MCPResource]):
         self.resources = resources
 
-    def search_papers(self, query: str, library_name: str = None) -> List[Dict[str, Any]]:
+    def search_papers(self, query: str, library_name: Optional[str] = None) -> List[Dict[str, Any]]:
+        logging.debug(f"Starting search_papers with query: {query}, library_name: {library_name}")
         results = []
         for resource in self.resources:
+            logging.debug(f"Checking resource: {resource.name}")
             if library_name and resource.name != library_name:
+                logging.debug(f"Skipping resource: {resource.name}")
                 continue
             try:
                 papers = resource.query("search", {"q": query})
+                logging.debug(f"Papers fetched from {resource.name}: {papers}")
                 results.extend(papers.get("results", []))
             except Exception as e:
-                print(f"Error querying {resource.name}: {e}")
-                # Try backup scraper if available
-                backup_scraper_name = getattr(resource, 'backup_scraper', None)
-                if backup_scraper_name:
-                    try:
-                        # Dynamically import and use the backup scraper
-                        import importlib
-                        scraper_module = importlib.import_module(backup_scraper_name)
-                        ScraperClass = getattr(scraper_module, backup_scraper_name.split('_')[0].capitalize() + 'Scraper')
-                        scraper = ScraperClass()
-                        scraped_results = scraper.search(query)
-                        print(f"Used backup scraper {backup_scraper_name} for {resource.name}")
-                        results.extend(scraped_results)
-                    except Exception as se:
-                        print(f"ERROR_CODE:SCRAPER_FAIL | {type(se).__name__}: {se}")
+                logging.error(f"Error querying {resource.name}: {e}")
         return results
 
     def get_metadata(self, paper_id: str, library_name: str) -> Dict[str, Any]:

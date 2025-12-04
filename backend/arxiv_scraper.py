@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 class ArxivScraper:
     def __init__(self):
-        self.base_url = 'https://export.arxiv.org/find/all/1/all:+AND+{query}/0/1/0/all/0/1'
+        self.base_url = 'https://arxiv.org/search/?query={query}&searchtype=all'
 
     def search(self, query):
         url = self.base_url.format(query='+'.join(query.split()))
@@ -11,12 +11,18 @@ class ArxivScraper:
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         results = []
-        for item in soup.select('dt'):
-            title_tag = item.find_next('dd').find('div', class_='list-title')
+        for item in soup.select('li.arxiv-result'):
+            title_tag = item.select_one('p.list-title a')
             title = title_tag.get_text(strip=True) if title_tag else 'No title'
-            authors_tag = item.find_next('dd').find('div', class_='list-authors')
-            authors = authors_tag.get_text(strip=True) if authors_tag else 'No authors'
-            results.append({'title': title, 'authors': authors})
+            authors_tags = item.select('p.authors a')
+            authors = ', '.join([a.get_text(strip=True) for a in authors_tags]) if authors_tags else 'No authors'
+            abstract_tag = item.select_one('span.abstract-short')
+            abstract = abstract_tag.get_text(strip=True) if abstract_tag else 'No abstract'
+            results.append({
+                'title': title,
+                'authors': authors,
+                'abstract': abstract
+            })
         return results
 
 # Example usage:

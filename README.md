@@ -6,7 +6,8 @@
 
 ## Features
 - Modular FastAPI backend with MCP resource wrappers for libraries
-- React frontend chat widget and filters
+- Automatic fallback to backup web scrapers (e.g., arXiv, UC Library) if API fails
+- React frontend chat widget and filters, displays backend search results and errors
 - Browser extension popup for chat and search
 - Citation management and export (Zotero, EndNote, BibTeX)
 - Prerequisite recommender and ranking engine
@@ -22,13 +23,14 @@
 ### Backend (API server)
 1. Install dependencies:
 	```
-	pip install fastapi uvicorn requests passlib pyjwt python-multipart
+	pip install fastapi uvicorn requests beautifulsoup4 passlib pyjwt python-multipart
 	```
 2. Run the backend server:
 	```
 	python backend/app.py
 	```
    Or use Docker for production (see `deployment/docker_backend_plan.md`).
+3. The backend will automatically use a backup web scraper (e.g., arXiv) if the API fails or is unavailable. Scraper selectors are updated to match current HTML structure.
 
 ### Frontend (React app)
 1. Install dependencies:
@@ -40,6 +42,7 @@
 	```
 	npm start
 	```
+3. The chat widget displays backend search results, including fallback scraper results and error codes/messages if no results are found.
 
 ### Extension
 1. Load the `extension` folder as an unpacked extension in your browser.
@@ -53,10 +56,12 @@
 ---
 **Note:** Tabbed launching in Windows Terminal is still a to-do. The current script launches backend and frontend in separate windows for reliability. If you want tabbed launching, revisit this after further testing or Windows Terminal updates.
 
-**Troubleshooting:** If the backend is running but not responding to frontend/API requests, check:
-- The backend logs for error codes (see recent error handling additions)
-- That your MCPResource and web scraper are correctly configured and reachable
-- That your config uses a valid endpoint or the web scraper selectors match the actual HTML structure
+**Troubleshooting:**
+- If the backend is running but not responding to frontend/API requests, check:
+	- The backend logs for error codes (see recent error handling additions)
+	- That your MCPResource and web scraper are correctly configured and reachable
+	- That your config uses a valid endpoint or the web scraper selectors match the actual HTML structure
+- If the frontend displays "No results found" or an error code, verify the backend `/search` endpoint and scraper configuration.
 
 ## Configuration
 - Add library connectors in `backend/config.example.json`.

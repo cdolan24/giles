@@ -21,20 +21,50 @@ function ChatWidget() {
       // Pass filters to backend
       const queryParams = { ...filters };
       const results = await searchPapers(input, queryParams);
-      setMessages(msgs => [
-        ...msgs,
-        { text: `Recommended papers: ${results.map(r => r.title).join(', ')}`, user: false }
-      ]);
-      setCitations(results.map(r => ({
-        author: r.author || 'Unknown',
-        year: r.year || 'N/A',
-        title: r.title,
-        journal: r.journal || 'N/A'
-      })));
+      console.log('Backend response:', results); // Log raw backend response for debugging
+      if (Array.isArray(results)) {
+        // Check if any error objects are present in the array
+        const errorObj = results.find(r => r && r.error);
+        if (errorObj) {
+          setMessages(msgs => [
+            ...msgs,
+            { text: `Error: ${errorObj.error} (${errorObj.error_code || ''})`, user: false }
+          ]);
+          setCitations([]);
+        } else {
+          setMessages(msgs => [
+            ...msgs,
+            { text: `Recommended papers: ${results.map(r => r.title).join(', ')}`, user: false }
+          ]);
+          setCitations(results.map(r => ({
+            author: r.author || 'Unknown',
+            year: r.year || 'N/A',
+            title: r.title,
+            journal: r.journal || 'N/A'
+          })));
+        }
+      } else if (results && results.error) {
+        setMessages(msgs => [
+          ...msgs,
+          { text: `Error: ${results.error} (${results.error_code || ''})`, user: false }
+        ]);
+        setCitations([]);
+      } else {
+        setMessages(msgs => [
+          ...msgs,
+          { text: 'Unexpected response format from backend.', user: false }
+        ]);
+        setCitations([]);
+      }
     } catch (e) {
+      // Try to extract error_code from error response if available
+      let errorMsg = 'Error fetching recommendations.';
+      if (e && e.error_code) {
+        errorMsg += ` (${e.error_code})`;
+      }
       setMessages(msgs => [
         ...msgs,
-        { text: 'Error fetching recommendations.', user: false }
+        { text: errorMsg, user: false }
       ]);
       setCitations([]);
     }

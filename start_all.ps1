@@ -12,7 +12,7 @@ cd ..
 
 # Start backend and frontend in separate PowerShell windows (fallback)
 Write-Host "Starting backend and frontend in separate PowerShell windows..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd backend; ..\.venv\Scripts\python.exe app.py" -WindowStyle Normal
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "$env:PYTHONPATH='.'; .\.venv\Scripts\python.exe -m uvicorn backend.app:app --host 127.0.0.1 --port 8000 --reload" -WindowStyle Normal
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd frontend; npm start" -WindowStyle Normal
 
 Write-Host "To load the browser extension:"

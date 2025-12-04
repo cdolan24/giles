@@ -7,7 +7,7 @@ export async function searchPapers(query, filters = {}) {
       params.append(key, value);
     }
   });
-  const res = await fetch(`http://127.0.0.1:8000/search?${params.toString()}`);
+  const res = await fetch(`http://127.0.0.1:8000/api/search?${params.toString()}`);
   return res.json();
 }
 

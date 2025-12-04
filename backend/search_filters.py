@@ -12,4 +12,4 @@ def apply_filters(query_params: Dict[str, Any], filters: Dict[str, Any]) -> Dict
 
 # Example usage:
 # filters = {"author": "Doe", "year": 2020, "open_access": True}
-# params = apply_filters({"q": "Quantum Computing"}, filters)
+# params = backend.search_filters.apply_filters({"q": "Quantum Computing"}, filters)
