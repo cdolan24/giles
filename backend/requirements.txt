@@ -1,7 +1,9 @@
 fastapi
 uvicorn
 requests
-passlib
+bcrypt
+sqlalchemy>=2.0
 pyjwt
 python-multipart
 beautifulsoup4
+httpx

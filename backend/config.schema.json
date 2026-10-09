@@ -8,9 +8,12 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["rest", "arxiv"], "default": "rest" },
           "baseUrl": { "type": "string" },
-          "apiKey": { "type": "string" },
-          "enabled": { "type": "boolean" }
+          "apiKeyEnv": { "type": "string", "description": "Environment variable holding the API key (preferred)" },
+          "apiKey": { "type": "string", "description": "Inline API key; only use in an untracked config.json" },
+          "enabled": { "type": "boolean" },
+          "backupScraper": { "type": "string", "enum": ["arxiv_scraper", "uc_library_scraper"] }
         },
         "required": ["name", "baseUrl", "enabled"]
       }

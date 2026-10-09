@@ -1,7 +1,8 @@
 # Reinstall backend dependencies
 Write-Host "Installing backend dependencies..."
-python -m pip install --upgrade pip
-python -m pip install -r backend\requirements.txt
+if (-not (Test-Path .\.venv)) { python -m venv .venv }
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
 
 # Reinstall frontend dependencies
 Write-Host "Installing frontend dependencies..."

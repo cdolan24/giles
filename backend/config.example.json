@@ -2,19 +2,18 @@
   "libraries": [
     {
       "name": "UC Library",
-      "baseUrl": "https://uclibrary.example.edu/search",
-      "apiKey": "",
-      "enabled": true,
+      "type": "rest",
+      "baseUrl": "https://uclibrary.example.edu/api",
+      "apiKeyEnv": "API_KEY_UC_LIBRARY",
+      "enabled": false,
       "backupScraper": "uc_library_scraper"
-    }
-    ,
+    },
     {
       "name": "arXiv",
-      "baseUrl": "https://export.arxiv.org/find/all/1/all:+AND+{query}/0/1/0/all/0/1",
-      "apiKey": "",
+      "type": "arxiv",
+      "baseUrl": "https://export.arxiv.org/api/query",
       "enabled": true,
       "backupScraper": "arxiv_scraper"
     }
-    // Add more libraries here
   ]
 }
