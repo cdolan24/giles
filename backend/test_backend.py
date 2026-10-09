@@ -1,6 +1,6 @@
 import unittest
-from mcp_resource import MCPResource
-from api_client import LibraryAPIClient
+from backend.mcp_resource import MCPResource
+from backend.api_client import LibraryAPIClient
 
 class DummyResource(MCPResource):
     def query(self, endpoint, params=None):

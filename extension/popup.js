@@ -7,30 +7,56 @@ root.innerHTML = `
   <div id="messages" style="margin-top:16px;"></div>
 `;
 
+// Change this if your backend is deployed elsewhere (and update host_permissions in manifest.json)
+const API_BASE = 'http://127.0.0.1:8000';
+
 async function queryBackend(input) {
   try {
-    // Change the URL if your backend is deployed elsewhere
-    const url = `http://127.0.0.1:8000/search?q=${encodeURIComponent(input)}`;
+    const url = `${API_BASE}/search?q=${encodeURIComponent(input)}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error('Backend error');
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (err) {
     return { error: err.message };
   }
 }
 
+function addMessage(text, style) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  Object.assign(div.style, style);
+  document.getElementById('messages').appendChild(div);
+  return div;
+}
+
+function addResult(paper) {
+  const div = document.createElement('div');
+  div.style.marginBottom = '8px';
+  const title = document.createElement(paper.url ? 'a' : 'strong');
+  title.textContent = paper.title;
+  if (paper.url) {
+    title.href = paper.url;
+    title.target = '_blank';
+  }
+  const meta = document.createElement('div');
+  meta.style.color = 'gray';
+  meta.textContent = [paper.author, paper.year, paper.source].filter(Boolean).join(' · ');
+  div.append(title, meta);
+  document.getElementById('messages').appendChild(div);
+}
+
 document.getElementById('sendBtn').onclick = async () => {
   const input = document.getElementById('chatInput').value;
   if (!input.trim()) return;
-  const messages = document.getElementById('messages');
-  messages.innerHTML += `<div style='text-align:right;'>${input}</div>`;
+  addMessage(input, { textAlign: 'right' });
   document.getElementById('chatInput').value = '';
-  messages.innerHTML += `<div style='color:gray;'>Searching...</div>`;
+  const status = addMessage('Searching...', { color: 'gray' });
   const result = await queryBackend(input);
-  if (result.error) {
-    messages.innerHTML += `<div style='color:red;'>Error: ${result.error}</div>`;
+  status.remove();
+  const error = result.error ? result : (Array.isArray(result) && result.find(r => r && r.error));
+  if (error) {
+    addMessage(`Error: ${error.error}${error.error_code ? ` (${error.error_code})` : ''}`, { color: 'red' });
   } else {
-    messages.innerHTML += `<div style='text-align:left;'><pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+    result.forEach(addResult);
   }
 };
